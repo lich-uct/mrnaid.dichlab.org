@@ -1,0 +1,13 @@
+[Unit]
+Description=mRNAid Celery worker
+After=network.target
+
+[Service]
+User=mrnaid
+Group=www-data
+WorkingDirectory=/opt/mrnaid-code/backend/flask_app/
+ExecStart=/opt/mrnaid-deployment/celery/celery.sh
+
+[Install]
+WantedBy=multi-user.target
+

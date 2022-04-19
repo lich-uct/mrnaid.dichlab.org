@@ -1,8 +1,7 @@
-# Ubuntu Deployment Scripts for biophi.dichlab.org
+# Ubuntu Deployment Scripts for mrnaid.dichlab.org
 
-This repository contains the deployment configuration for the public http://biophi.dichlab.org/ server.
+This repository contains the deployment configuration for the public http://mrnaid.dichlab.org/ server.
 
-Feel free to use this as a template for 🐧 Ubuntu deployment.
 
 ## Deploying a new release
 
@@ -13,47 +12,35 @@ To deploy a new release, simply run the `./deploy.sh` script.
 Here's how to set up the deployment. You'll need root acces for this (us `su root` or `sudo bash` to run as root).
 
 Summary of the following steps:
-- Set up directory and biophi user
-- Install conda and BioPhi
+- Set up directory and mrnaid user
+- Install Conda
 - Install and set up redis database
-- Set up flask & celery worker services
+- Set up uwsgi & celery worker services
 - Set up Nginx server and SSL
 
 Some steps might be skipped here. If you get stuck, Google is your friend 😊
 
 ### Create deployment directory
 
-This directory will host all the settings and the OASis DB.
+This directory will host all the settings.
 
 ```bash
 # Create deployment directory (you need root access for this and everything that follows)
-mkdir /opt/biophi
-cd /opt/biophi
+mkdir /opt/mrnaid-deployment
+cd /opt/mrnaid-deployment
 # Clone this repo (or your own fork) into current directory
-git clone git@github.com:lich-uct/biophi.dichlab.org.git .
+git clone git@github.com:lich-uct/mrnaid.dichlab.org.git .
 ```
 
-### Download OASis DB
 
-Download and unzip the [OASis database file (22GB uncompressed)](https://zenodo.org/record/5164685).
-
-```bash
-# Enter the deployment directory
-cd /opt/biophi
-# Download database file
-wget https://zenodo.org/record/5164685/files/OASis_9mers_v1.db.gz
-# Unzip
-gunzip OASis_9mers_v1.db.gz
-```
-
-### Add biophi user
+### Add mrnaid user
 
 ```bash
-useradd biophi
-addgroup biophi staff
-addgroup biophi www-data
-mkdir /home/biophi /home/biophi/run
-chown biophi:biophi /home/biophi /home/biophi/run
+useradd mrnaid
+addgroup mrnaid staff
+addgroup mrnaid www-data
+mkdir /home/mrnaid /home/mrnaid/run
+chown mrnaid:mrnaid /home/mrnaid /home/mrnaid/run
 ```
 
 ### Install redis
@@ -70,17 +57,21 @@ redis-cli PING
 # You should get PONG
 ```
 
-### Install BioPhi
+### Clone mRNAid repository
+```bash
+# create directory for code
+mkdir /opt/mrnaid-code
+cd /opt/mrnaid-code
+# clone repository
+git clone git@github.com:Merck/mRNAid.git .
+```
 
-You can install BioPhi using [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/download.html) 
-or one of the alternatives ([Miniconda](https://docs.conda.io/en/latest/miniconda.html), 
-[Miniforge](https://github.com/conda-forge/miniforge)).
+### Create Conda environment
 
-Then, add conda to your PATH and run `conda init`.
 
 ```bash
-# Create the BioPhi conda environment
-conda create -n biophi python=3.8
+# Create the mRNAid conda environment
+conda env create -n mRNAid -f /opt/mrnaid-code/backend/flask_app/environment.yml
 conda activate biophi
 
 # Install BioPhi and dependencies from Bioconda channel

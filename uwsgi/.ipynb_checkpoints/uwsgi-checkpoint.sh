@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run Celery worker service
+# Run mRNAid flask backend using uwsgi
 
 # Exit on first error
 set -e
@@ -7,8 +7,4 @@ set -e
 # Activate conda env and set ENV vars
 source /opt/mrnaid-deployment/activate.sh
 
-celery \
-	-A tasks \
-	worker \
-	--loglevel=INFO \
-	--concurrency 4
+uwsgi --ini app.ini:uwsgi-no-docker

@@ -7,12 +7,14 @@ export "PATH=$CONDA_DIR/bin:$PATH"
 # Enable conda
 source $CONDA_DIR/etc/profile.d/conda.sh
 
-# Activate the BioPhi environment
-conda activate biophi
+# Activate the mRNAid environment
+conda activate mRNAid
 
-# Set up ENV vars for BioPhi
-export OASIS_DB_PATH=/opt/biophi/OASis_9mers_v1.db
-export MAX_CONTENT_LENGTH=262144 # 256kb max upload file size
-export MAX_INPUTS=100 # maximum number of input antibodies
-export STATS_DB_PATH=/home/biophi/run/stats.db
-export MAILCHIMP_NEWSLETTER=c7bcd0367a4cdbbfe2ef413ff/c5b4d513538dcdb730f72a9db
+# Set up ENV vars for mRNAid
+BACKEND_DIR=/opt/mrnaid-code/backend
+export CELERY_BROKER_URL=redis://127.0.0.1:6379 
+export CELERY_RESULT_BACKEND=redis://127.0.0.1:6379 
+export LOG_FILE=${BACKEND_DIR}/flask_app/logs/logs.log 
+export BACKEND_OBJECTIVES_DATA=${BACKEND_DIR}/common/objectives/data 
+export PYTHONPATH=${BACKEND_DIR}/common:${BACKEND_DIR}/common/objectives:${BACKEND_DIR}/common/constraints
+export APP_NAME=backend

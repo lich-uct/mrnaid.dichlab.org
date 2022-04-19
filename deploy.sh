@@ -4,14 +4,14 @@
 
 set -ex
 
-cd /opt/github-biophi
+cd /opt/mrnaid-code
 
 git pull
 
-source /opt/biophi/activate.sh
+source /opt/mrnaid-deployment/activate.sh
 
-pip install . --no-deps
+#pip install . --no-deps
 
-service biophi-celery restart
-service biophi-gunicorn restart
+service mrnaid-celery restart
+service mrnaid-uwsgi restart
 
