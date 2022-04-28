@@ -2,6 +2,8 @@
 
 This repository contains the deployment configuration for the public http://mrnaid.dichlab.org/ server.
 
+Adapted from [https://github.com/lich-uct/biophi.dichlab.org](https://github.com/lich-uct/biophi.dichlab.org)
+
 
 ## Deploying a new release
 
