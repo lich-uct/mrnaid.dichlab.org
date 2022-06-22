@@ -3,11 +3,7 @@
 This repository contains the deployment configuration for the public http://mrnaid.dichlab.org/ server.
 
 Adapted from [https://github.com/lich-uct/biophi.dichlab.org](https://github.com/lich-uct/biophi.dichlab.org)
-
-
-## Deploying a new release
-
-To deploy a new release, simply run the `./deploy.sh` script. 
+ 
 
 ## First time setup on Ubuntu
 
@@ -90,6 +86,9 @@ Check the local uWSGI web server config and adjust as needed:
 - [uwsgi/uwsgi.sh](uwsgi/uwsgi.sh) uWSGI script
 - [activate.sh](activate.sh) Conda and ENV var activation, adjust path to conda installation
 
+Suggestion:
+change line 15 in `/opt/mrnaid-code/backend/flask_app/app.ini` to `socket = :8080`.
+
 Register the config as a systemd service:
 
 ```
@@ -143,7 +142,25 @@ Remove default config files:
 # location may vary based on your system and installation
 rm /etc/nginx/conf.d/default.conf
 ```
-and replace them with custom ones:
+edit config file `/opt/mrnaid-code/frontend/config/nginx.conf` to contain:
+```
+server{
+    listen 80;
+    
+    root /usr/share/nginx/html/;
+    index /index.html;
+    try_files $uri /index.html$is_args$args =404;
+    server_name mrnaid.dichlab.org;
+    
+    location /api/v1 {
+        include uwsgi_params;
+        uwsgi_pass 127.0.0.1:8080;
+        uwsgi_read_timeout 300;
+    }
+}
+```
+
+and replace old config files with custom ones:
 ```
 # target location may vary based on your system and installation
 cp ./config/nginx.conf /etc/nginx/conf.d/
@@ -190,3 +207,8 @@ systemctl status nginx
 ### Done!
 
 You should be all good to go. 
+
+
+## Deploying a new release
+
+To deploy a new release, simply run the `./deploy.sh` script.
